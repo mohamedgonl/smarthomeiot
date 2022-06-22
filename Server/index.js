@@ -6,6 +6,7 @@ const account = require('./routers/account')
 const home = require('./routers/home')
 const room = require('./routers/room')
 const device = require('./routers/device')
+const statis = require('./routers/statics')
 const app = express();
 const connection = require('./connection')
 const { connectMQTT } = require('./mqtt')
@@ -28,6 +29,7 @@ app.use('/account', account)
 app.use('/home', home)
 app.use('/device', device)
 app.use('/room', room)
+app.use('/statis',statis)
 
 // connect database
  connection()
