@@ -18,7 +18,30 @@ const devices = mongoose.Schema({
             type: Date,
             default: Date.now()
         }
-    }]
+    }],
+    control: {
+        status: {
+            type: String,
+            default: 'off'
+        },
+        mode: {
+            type: String,
+            default: ''
+        },
+        direction: {
+            type: String,
+            default: ''
+        },
+        speed: {
+            type: String,
+            default: ''
+        },
+        intensity: {
+            type: String,
+            default: ''
+        }
+
+    }
   
 }, {collection: 'devices'})
 

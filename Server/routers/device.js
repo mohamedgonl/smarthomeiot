@@ -1,10 +1,10 @@
 const express = require('express')
-const { control } = require('../controllers/controlDevices')
-const { createDevice, deleteDevice } = require('../controllers/handleDevices')
+const { control, deleteDevice, createDevice, getDevice } = require('../controllers/deviceControl')
 
 const router = express.Router()
 
-router.post('/create',createDevice)
 router.post('/control',control)
-router.post('/delete',deleteDevice)
+router.delete('/',deleteDevice)
+router.post('/',createDevice)
+router.get('/:deviceId',getDevice)
 module.exports = router

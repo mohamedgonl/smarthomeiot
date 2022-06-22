@@ -1,31 +1,41 @@
 
 
-import {createStackNavigator} from 'react-navigation-stack';
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native'
-import Login from './components/Login';
-import Home from './components/Home';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
-import Tabs from './components/Tabs';
-import { createAppContainer } from 'react-navigation';
-import Room from './components/Room';
+import Login from './components/Log/Login';
+import Register from './components/Log/Register';
+import React from 'react'
+import LandingPage from './components/LandingPage/Landing'
+import Main from './components/Main/Main'
 
-const MainNavigator = createStackNavigator({
-  Login: {screen: Login}, 
-   Tabs :{screen: Tabs}, 
+// const MainNavigator = createStackNavigator({
+  
+//    Tabs :{screen: Tabs}, 
+//    Login: {screen: Login}, Register: {screen: Register},
    
-   Register: {screen: Register},
-},
-{
-  headerMode: 'none',
-  navigationOptions: {
-      headerVisible: false,
-  }
-});
+// },
+// {
+//   headerMode: 'none',
+//   navigationOptions: {
+//       headerVisible: false,
+//   }
+// });
+const Stack = createNativeStackNavigator()
 
-const App = createAppContainer(MainNavigator);
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}} >
+            <Stack.Screen name="Main" component={Main} />
+            <Stack.Screen name="Landing" component={LandingPage} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} /> 
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+};
 
 
 
-export default App;
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, TouchableWithoutFeedback, Slider } from 'react-native'
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import * as theme from '../theme';
