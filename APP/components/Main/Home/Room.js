@@ -134,9 +134,10 @@ export default function Room ({navigation}) {
       headerTitle={'Add a new device'}>
             <TextInput placeholder="Device's name"    placeholderTextColor="#003f5c" 
             autoFocus={true} onChangeText={text => setNewRoom(text)}
-            style={{height: 60, borderColor: 'black',borderWidth:1, borderRadius:25, padding: 20, marginTop: 25, marginBottom: 25}}>
+            style={{height: 60, borderColor: 'black',borderWidth:1, borderRadius:7, padding: 20, marginTop: 25, marginBottom: 25}}>
             </TextInput>
             <DropDownPicker open={false}
+            style= {{marginBottom: 20, height: 60}}
              items={['Fan', 'Wifi', 'Air-Conditioner', 'Lightburb', 'Others']}
              setOpen={()=>{open=true}} />
       </AddModal>
