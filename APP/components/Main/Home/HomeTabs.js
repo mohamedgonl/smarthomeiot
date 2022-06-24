@@ -9,9 +9,10 @@ const Tab = createNativeStackNavigator();
 export function HomeTabs ({navigation}) {
     return (
         <Tab.Navigator
+        initialRouteName='Home'
         screenOptions={{headerShown: false}}>
             <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Room" component={Room} />
+            <Tab.Screen name="Room" component={Room}  />
             <Tab.Screen name="Device" component={Device} />
         </Tab.Navigator>
     )

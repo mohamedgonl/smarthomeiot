@@ -2,31 +2,23 @@ import {Image,Text,View,StyleSheet,SafeAreaView,TouchableOpacity, Dimensions} fr
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import COLORS from '../../../assets/colors/color'
 import {useState, useEffect} from "react";
-import {FlatList} from "react-native-gesture-handler";
+import {FlatList, TextInput} from "react-native-gesture-handler";
+import AddModal from "./AddModal";
 const width = Dimensions.get('window').width / 2 - 10;
 const imgRoom = (name) => {
     switch (name) {
         case 'Livingroom':
-            return require('../../../assets/rooms/livingroom.jpg')
-            break;
+            return require( '../../../assets/rooms/livingroom.jpg')
         case 'Kitchen':
-            return require('../../../assets/rooms/kitchen.jpg')
-            break;
+            return require( '../../../assets/rooms/kitchen.jpg')
         case 'Bedroom':
-                return require('../../../assets/rooms/bedroom.jpg')
-                break;
+            return require( '../../../assets/rooms/bedroom.jpg')
         case 'Bathroom':
-                return require('../../../assets/rooms/bathroom.jpg')
-                break;
-        case 'Washingroom':
-                    return require('../../../assets/rooms/bathroom.jpg')
-                    break;
+            return require( '../../../assets/rooms/bathroom.jpg')
         case 'Gymroom':
-                    return require('../../../assets/rooms/gymroom.jpg')
-                    break;
+            return require( '../../../assets/rooms/gymroom.jpg')
         default:
-                return require('../../../assets/rooms/another.jpg')
-            break;
+            return require('../../../assets/rooms/another.jpg')
     }
 } 
 
@@ -63,13 +55,8 @@ const rooms = [{
     name: 'Kitchen'
 },
 ]
-
-
-export default function Home({navigation}) { 
-
-    const Room = ({room}) => {
-        const devices = room.item.devices
-        console.log(devices);
+const Room = ({room,navigation}) => {
+    const devices = room.item.devices
       return ( 
       <TouchableOpacity
         onPress={()=>navigation.navigate('Room',room)}
@@ -100,6 +87,11 @@ export default function Home({navigation}) {
         </View></TouchableOpacity>)
     }
 
+export default function Home({navigation}) { 
+
+    const [visible, setVisible] = useState(false);
+    const [newRoom, setNewRoom] = useState('');
+
    
         
     return (
@@ -120,7 +112,7 @@ export default function Home({navigation}) {
             marginRight: 0
            }}
            numColumns={2} data={rooms} 
-           renderItem={(item)=><Room
+           renderItem={(item)=><Room navigation ={navigation}
            room={item}>
 
            </Room>
@@ -136,11 +128,22 @@ export default function Home({navigation}) {
         backgroundColor: 'pink'
        }}>  
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>setVisible(true)}>
             <IconEntypo name="plus" size={40} color={'white'} ></IconEntypo>
         </TouchableOpacity>
        
        </View>
+      <AddModal
+      visible={visible}
+      info = {newRoom}
+      hide = {()=>{setVisible(false)}}
+      api = {``}
+      headerTitle={'Add a new room'}>
+            <TextInput placeholder="Room's name"    placeholderTextColor="#003f5c" 
+            autoFocus={true} onChangeText={text => setNewRoom(text)}
+            style={{height: 60, borderColor: 'black',borderWidth:1, borderRadius:25, padding: 20, marginTop: 25, marginBottom: 25}}>
+            </TextInput>
+      </AddModal>
         </SafeAreaView>
     )
 }

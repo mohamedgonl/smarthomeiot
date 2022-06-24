@@ -17,7 +17,7 @@ export default function Main(){
 
     return(
         <Tab.Navigator
-        initialRouteName="Profile"
+        initialRouteName="HomeTabs"
        screenOptions={{
            tabBarShowLabel: false,
            headerShown: true ,
