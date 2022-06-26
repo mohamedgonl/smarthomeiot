@@ -1,19 +1,50 @@
-import {StyleSheet,Text, View, Touchable, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native'
-
+import axios from 'axios';
+import {StyleSheet,Text, View, ActivityIndicator, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native'
+import {useState, useEffect} from "react";
 export default function Profile({navigation}){
   
+  var accountId = '62a93002ff29dfa62adcf17b'
+  
+  const [accountInfo, setAccountInfo] = useState({
+      fullname: '',
+      phone: ''
+  });
+  const [loading, setLoading] = useState(false);
 
-
-
+  const loadAccountInfo = async () => {
+   
+    const url = 'https://smarthome-iot-hust.herokuapp.com/account/'+accountId;
+    setLoading(true)
+    try {
+     await axios.get(url)
+        .then(res => res.data)
+        .then(data => {
+               console.log(data);
+               setAccountInfo({fullname: data.fullname, phone: data.phone})
+               console.log(accountInfo);
+               setLoading(false) 
+              })
+        }
+    catch (err) {
+      console.log(err);
+    }
+    useEffect(() => { 
+      console.log('call load info');
+      loadAccountInfo();
+    }, [accountInfo]);
+  }
     return(
     <SafeAreaView style={[{flex: 1}]}>
-        <ScrollView style={[style.container]}>
+      {loading?<ActivityIndicator style={{flex: 1, justifyContent:'center'}}></ActivityIndicator>
+      :<>
+      
+      <ScrollView style={[style.container]}>
        
         <View style={{marginBottom: 60}}>
             <Image style={style.userImg} source={require('../../../assets/avatar/meo.jpg')}></Image>
-            <Text style={style.userName}>Nguyễn Quang Long</Text>
-            <Text style={style.email}>Email</Text>
-            <Text style={style.email}>098823722</Text>
+            <Text style={style.userName}>{accountInfo.fullname}</Text>
+            {/* <Text style={style.email}>Email</Text> */}
+            <Text style={style.email}>{accountInfo.phone}</Text>
         </View>
             
        
@@ -30,7 +61,9 @@ export default function Profile({navigation}){
             style={[style.button,{backgroundColor: '#EE968D'}]}>
             <View><Text style={style.userBtnTxt}>Logout</Text></View>
            </TouchableOpacity>
-        </ScrollView></SafeAreaView>
+        </ScrollView>
+      </>}
+        </SafeAreaView>
        
     )
 }

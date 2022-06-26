@@ -6,7 +6,7 @@ import {ColorMode,ControlSlider,ModePicker,StatusView} from './ControlComponents
 export default function Device(){
     const [deviceInfo, setDeviceInfo] = useState({
         deviceName: 'Quạt siêu xịn',
-        deviceType: 'Light'
+        deviceType: 'Fan'
     });
     const [control, setControl] = useState({
         status: false,

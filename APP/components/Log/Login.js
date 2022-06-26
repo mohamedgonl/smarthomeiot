@@ -6,10 +6,10 @@ import {
     SafeAreaView,
     TextInput,
     TouchableOpacity,
-    Alert,
+    Alert,ActivityIndicator
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import axios from 'axios';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
@@ -17,118 +17,88 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 export default function Login({navigation}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
-
-    const login = () => {
-        if (!username || !password) {
+    const login =  () => {
+        try {
+        setLoading(true);
+        if (username =="" || password == "") {
             Alert.alert("Please enter username and password!");
+            setUsername('')
+            setPassword('')
+            setLoading(false);
             return;
         }
-        console.log(username, password);
-        const url = 'https://smart-home-iot-rhust.herokuapp.com/log/login'
-        axios.post(url, {
+
+        const url = 'https://smarthome-iot-hust.herokuapp.com/account/login'
+         axios.post(url, {
             username: username,
             password: password
         })
         .then(res => res.data)
         .then((data) => {
-            console.log(data);
-         
             if (data.status == "OK") {
-                console.log('Save data: ',data.user);
-                AsyncStorage.setItem('user',JSON.stringify(data.user));
-                navigation.navigate('Tab')
+              
+                setUsername('')
+                setPassword('')
+                setLoading(false)
+                navigation.navigate('Main', data.accountId)
             } else {
                 Alert.alert("Username or password is wrong!")
+                setUsername('')
+                setPassword('')
+                setLoading(false);
             }
         }).catch(err => {
             console.log(err);
             Alert.alert("Something error :(")
         })
+        } catch (error) {
+            console.log(error);
+        }
     };
-
-
     return (
-        <SafeAreaView style={
-            loginStyles.container
-        }>
+        <SafeAreaView style={loginStyles.container}>
+            {
+            loading
+            ?<ActivityIndicator style={{flex:1,justifyContent: 'center'}}></ActivityIndicator>
+            :<>
             <StatusBar style="light"></StatusBar>
-            <View style={
-                loginStyles.logo
-            }>
-                <MaterialCommunityIcons name="home-automation"
-                    size={100}
-                    color="white"/>
-                <Text style={
-                    loginStyles.text
-                }>Smart Home</Text>
+            <View style={loginStyles.logo}>
+                <MaterialCommunityIcons name="home-automation" size={100} color="white"/>
+                <Text style={loginStyles.text}>Smart Home</Text>
             </View>
 
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                        loginStyles.inputText
-                    }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Username"
                     placeholderTextColor="#003f5c"
-                    onChangeText={
-                        (text) => setUsername(text)
-                    }/>
+                    value={username}
+                    onChangeText={(text) => setUsername(text)}/>
             </View>
 
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                        loginStyles.inputText
-                    }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Password"
                     placeholderTextColor="#003f5c"
                     secureTextEntry
-                    onChangeText={
-                        (text) => setPassword(text)
-                    }/>
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}/>
             </View>
 
             <TouchableOpacity>
-                <Text style={
-                    loginStyles.forgot
-                }>Forgot Password?</Text>
+                <Text style={loginStyles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={
-                    loginStyles.loginBtn
-                }
-                onPress={
-                    () => {
-                        login()
-                    }
-            }>
-                <Text style={
-                    loginStyles.loginText
-                }>LOGIN</Text>
+            <TouchableOpacity style={loginStyles.loginBtn} onPress={() => login()}>
+                <Text style={loginStyles.loginText}>LOGIN</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={
-                    [
-                        loginStyles.loginBtn, {
-                            backgroundColor: "#D1C0D8"
-                        }
-                    ]
-                }
-                onPress={
-                    () => navigation.navigate('Register')
-            }>
-
-                <Text style={
-                    [
-                        loginStyles.loginText, {
-                            marginTop: 5
-                        }
-                    ]
-                }>REGISTER</Text>
+            <TouchableOpacity style={[loginStyles.loginBtn, { backgroundColor: "#D1C0D8"}]}
+                onPress={() => navigation.navigate('Register')}>
+                <Text style={[loginStyles.loginText, {marginTop: 5}]}>REGISTER</Text>
             </TouchableOpacity>
-            
+            </>
+            }    
         </SafeAreaView>
     )
 }

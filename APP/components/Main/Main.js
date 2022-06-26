@@ -46,87 +46,30 @@ export default function Main(){
            }
        }}
         >
-            <Tab.Screen name="HomeTabs" component={HomeTabs} options={
-                {
-                    tabBarIcon: ({focused}) =>(
-                        <View style={{
-                            alignItems: 'center', justifyContent:'center', top: 10
-                        }}>
-                           <IconFontAwesom name="home" 
-                            
-                          size={25}
-                                color = {focused ? '#e32f45' :'#748c94'}
-
-                             />
-                            <Text style={{
-                                color:  focused? '#e32f45' :'#748c94',
-                                fontSize: 12
-                            }} >Home</Text>
-                        </View>
-                    )
-                }
-            } />
-            <Tab.Screen name="Statics" component={Statis}
-            options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{
-                        alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'
-                    }}>
-                     <IconAntDesign name="linechart" 
-                            
-                            size={25}
-                                  color = {focused ? '#e32f45' :'#748c94'}
-  
-                               />
-        
-                       <Text styles={{
-                           color: focused?  '#e32f45' :'#748c94', fontSize:12
-                    }} >Statis</Text>
+            <Tab.Screen name="HomeTabs" component={HomeTabs} options={{tabBarIcon: ({focused}) =>(
+                    <View style={{alignItems: 'center', justifyContent:'center', top: 10}}>
+                        <IconFontAwesom name="home"  size={25} color = {focused ? '#e32f45' :'#748c94'}/>
+                            <Text style={{color:  focused? '#e32f45' :'#748c94', fontSize: 12}} >Home</Text>
+                    </View>
+                    )}}/>
+            <Tab.Screen name="Statics" component={Statis} options={{tabBarIcon: ({focused}) => (
+                    <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
+                     <IconAntDesign name="linechart" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
+                    <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Statis</Text>
+                    </View >
+                    )}} />
+            <Tab.Screen name="Mic" component={Mic} options={{  tabBarIcon: ({focused}) => (
+                    <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center' }}>
+                        <IconEntypo name="mic"  size={25}  color = {focused ? '#e32f45' :'#748c94'}/>
+                        <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Mic</Text>
                     </View  >
-                )
-            }} />
-            <Tab.Screen name="Mic" component={Mic}
-             options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{
-                        alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'
-                    }}>
-                      <IconEntypo name="mic" 
-                            
-                            size={25}
-                                  color = {focused ? '#e32f45' :'#748c94'}
-  
-                               />
-        
-                       <Text styles={{
-                           color: focused?  '#e32f45' :'#748c94', fontSize:12
-                    }} >
-                        Mic
-                    </Text>
-                    </View  >
-                )
-            }}
-            />
-                <Tab.Screen name="Profile" component={Profile}
-            options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{
-                        alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'
-                    }}>
-                     <IconAntDesign name="user" 
-                            
-                            size={25}
-                                  color = {focused ? '#e32f45' :'#748c94'}
-  
-                               />
-        
-                       <Text styles={{
-                           color: focused?  '#e32f45' :'#748c94', fontSize:12
-                    }} >Profile</Text>
-                    </View  >
-                )
-            }} />
-            
+                )}}/>
+            <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({focused}) => (
+                    <View style={{alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
+                        <IconAntDesign name="user" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
+                        <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12 }} >Profile</Text>
+                    </View>
+                    )}}/>  
         </Tab.Navigator>
     )
 }

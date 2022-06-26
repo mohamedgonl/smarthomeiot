@@ -106,9 +106,32 @@ const register = async (req, res) => {
     }
 }
 
+const getAccountInfo = async (req,res) => {
+    try {
+        const accountId = req.params.accountId;
+        const data = await Users.findById(accountId)
+        res.status(200).json({
+            status: 'OK',
+            msg: 'Get account info success',
+            accountInfo: {
+                username: data.username,
+                fullname: data.fullname,
+                phone: data.phone
+            }
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: 'ERR',
+            msg: 'Server error',
+            error : err
+        })
+    }
+}
+
 module.exports = {
     login,
     register,
     updateInfo,
-    changePassword
+    changePassword,
+    getAccountInfo
 }

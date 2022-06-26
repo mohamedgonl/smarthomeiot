@@ -1,164 +1,104 @@
 import { StatusBar } from "expo-status-bar";
-import {Text,View,StyleSheet,SafeAreaView,TextInput,TouchableOpacity,Alert
+import {Text,View,StyleSheet,SafeAreaView,TextInput,TouchableOpacity,Alert,ActivityIndicator
 } from "react-native";
 import { useState } from "react";
 import axios from 'axios';
 
 export default function Register({ navigation }) {
-
-    const [info, setInfo] = useState({
+    const initInfo = {
         username: "",
         password: "",
         fullname: '',
         phone: '',
-    });
+    }
+    const [info, setInfo] = useState(initInfo);
   
-
+    const [loading, setLoading] = useState(false);
 
     const register = () => {
-        console.log(info);
-     if(!info.username || !info.password) {
-         Alert.alert('Please enter username and password');
-         return;
-     }
-     const url = "https://smart-home-iot-rhust.herokuapp.com/log/register";
+        setLoading(true);
+        try {
 
-      axios.post(url,info)
-        .then(res => res.data)
-        .then(data => {
-            console.log(data);
-            if(data['status'] == 'OK') {
-                Alert.alert('Create account success!');
-                navigation.navigate('Login');
+            if(info.username =='' || info.password =='') {
+                Alert.alert('Please enter username and password');
+                setInfo(initInfo)
+                setLoading(false);
+                return;
             }
-            else{
-                Alert.alert("Account is existed!");
-            }
-        })
-        .catch(err => {
-            setMsg("Something error :(")
-            console.log(err);
-            Alert.alert(err);
-        })
+            const url = "https://smarthome-iot-hust.herokuapp.com/account";
+       
+             axios.post(url,info)
+               .then(res => res.data)
+               .then(data => {
+                 
+                   if(data['status'] == 'OK') {
+                       Alert.alert('Create account success!');
+                       setInfo(initInfo);
+                       setLoading(false)
+                       navigation.navigate('Login');
+                   }
+                   else{
+                       Alert.alert("Account is existed!");
+                       setInfo(initInfo)
+                       setLoading(false)
+                   }
+               })
+               .catch(err => {
+                   setMsg("Something error :(")
+                   console.log(err);
+                   Alert.alert(err);
+               })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
-        <SafeAreaView style={
-            loginStyles.container
-        }>
-            <StatusBar style="light"></StatusBar>
+        <SafeAreaView style={loginStyles.container}>
+            {loading?<ActivityIndicator style={{flex:1,justifyContent: 'center'}}></ActivityIndicator>
+            :<><StatusBar style="light"></StatusBar>
             <View >
                 <Text style={loginStyles.header}>REGISTER</Text>
             </View>
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                    loginStyles.inputText
-                }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Username"
                     placeholderTextColor="#003f5c"
-                    onChangeText={
-                        (text) => setInfo({
-                            ...info,
-                            username: text
-                        })
-                    } />
+                    value={info.username}
+                    onChangeText={(text) => setInfo({...info,username: text})} />
             </View>
 
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                    loginStyles.inputText
-                }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Password"
+                    value={info.password}
                     placeholderTextColor="#003f5c"
                     secureTextEntry
-                    onChangeText={
-                        (text) => setInfo({
-                            ...info,
-                            password: text
-                        })
-                    } />
+                    onChangeText={(text) => setInfo({ ...info,password: text})} />
             </View>
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                    loginStyles.inputText
-                }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Full name"
+                    value={info.fullname}
                     placeholderTextColor="#003f5c"
-
-                    onChangeText={
-                        (text) => setInfo({
-                            ...info,
-                            fullname: text
-                        })
-                    } />
+                    onChangeText={(text) => setInfo({...info,fullname: text})} />
             </View>
-            <View style={
-                loginStyles.inputView
-            }>
-                <TextInput style={
-                    loginStyles.inputText
-                }
+            <View style={loginStyles.inputView}>
+                <TextInput style={loginStyles.inputText}
                     placeholder="Phone"
+                    keyboardType='numeric'
+                    value={info.phone}
                     placeholderTextColor="#003f5c"
-
-                    onChangeText={
-                        (text) => setInfo({
-                            ...info,
-                            phone: text
-                        })
-                    } />
+                    onChangeText={(text) => setInfo({...info,phone: text})} />
             </View>
-         
-
-
-            <TouchableOpacity onPress={
-                () => {
-                    register()
-                }
-            }
-                style={
-                    [
-                        loginStyles.loginBtn, {
-                            backgroundColor: "#D1C0D8"
-                        }
-                    ]
-                }>
-
-                <Text style={
-                    [
-                        loginStyles.loginText, {
-                            marginTop: 5
-                        }
-                    ]
-                }>REGISTER</Text>
+            <TouchableOpacity onPress={() =>register()} style={[loginStyles.loginBtn, {backgroundColor: "#D1C0D8"}]}>
+                <Text style={ [loginStyles.loginText, {marginTop: 5}]}>REGISTER</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={
-                () => {
-                   navigation.goBack()
-                }
-            }
-                style={
-                    [
-                        loginStyles.loginBtn, {
-                            backgroundColor: "#EA6060"
-                        }
-                    ]
-                }>
-
-                <Text style={
-                    [
-                        loginStyles.loginText, {
-                            marginTop: 5
-                        }
-                    ]
-                }>CANCLE</Text>
+            <TouchableOpacity onPress={() => {navigation.goBack()}} style={[ loginStyles.loginBtn, { backgroundColor: "#EA6060" }]}>
+                <Text style={[ loginStyles.loginText, { marginTop: 5 }]}>CANCLE</Text>
             </TouchableOpacity>
+            </>}
+            
         </SafeAreaView>
     )
 }
