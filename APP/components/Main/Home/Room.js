@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import AddModal from "./AddModal";
 import DropDownPicker from 'react-native-dropdown-picker';
+
 const width = Dimensions.get('window').width / 2 -10;
 
 
@@ -33,12 +34,7 @@ const Device = ({device,navigation}) => {
         </Text>
     </View></TouchableOpacity>)
 }
-
-export default function Room ({navigation}) {
-    const roomName = "Bedroom";
-    const temperature = '34';
-    const [visible, setVisible] = useState(false);
-    const devices = [{
+  const devices = [{
         deviceName: 'Quạt siêu xịn',
         deviceType: 'Fan',
     },
@@ -57,9 +53,16 @@ export default function Room ({navigation}) {
     {
         deviceName: 'Thiết bị mới',
         deviceType: 'new-box',
-    }]
+    }] 
+    const temperature = '34';
+
+export default function Room ({navigation}) {
+   
+    const [visible, setVisible] = useState(false);
+    const addNewDevice = () =>{
+      console.log(newDevice);
+    }
     const data = {
-        labels: ["January", "February", "March", "April", "May", "June"],
         datasets: [
           {
             data: [20, 45, 28, 80, 99, 43],
@@ -67,8 +70,27 @@ export default function Room ({navigation}) {
             strokeWidth: 2 // optional
           }
         ],
-        legend: ["Rainy Days"] // optional
       };
+      const [open, setOpen] = useState(false);
+      const [value, setValue] = useState(null);     
+      const [items, setItems] = useState([
+            {label: 'Air-conditioner', value: 'ccocôcc'},
+            {label: 'Fan', value: 'us12312a'},
+            {label: 'Wifi', value: 'canad2131a'},
+            {label: 'Lightburlb', value: 'e21312u'},
+            {label: 'Others', value: 'norwa12321y'},
+         ]);
+      const [newDevice, setNewDevice] = useState({
+        deviceName: '',
+        deviceType: '',
+      });
+      const hide = () => {
+        // reset data form
+        setOpen(false);
+        setValue(null);
+        setNewDevice(null);
+        setVisible(false);
+      }
     return(
         <SafeAreaView>
          
@@ -114,32 +136,44 @@ export default function Room ({navigation}) {
        style={{
         display: 'flex',
         flexDirection :'column',
-        borderRadius: 25,
+        borderRadius: 35,
         position: 'absolute',
         right: 10,
-        bottom: 150, 
+        bottom: 60, 
         backgroundColor: '#F16700'
        }}>  
 
         <TouchableOpacity onPress={()=>setVisible(true)}>
-            <IconEntypo name="plus" size={40} color={'white'} ></IconEntypo>
+            <IconEntypo name="plus" size={50} color={'white'} ></IconEntypo>
         </TouchableOpacity>
        
        </View>
       <AddModal
+      
       visible={visible}
-      info = {''}
-      hide = {()=>{setVisible(false)}}
-      api = {``}
+      hide = {()=>hide()}
+      submit={()=>addNewDevice()}
       headerTitle={'Add a new device'}>
             <TextInput placeholder="Device's name"    placeholderTextColor="#003f5c" 
-            autoFocus={true} onChangeText={text => setNewRoom(text)}
+            autoFocus={true} onChangeText={text => setNewDevice({ ...newDevice, deviceName:text})}
             style={{height: 60, borderColor: 'black',borderWidth:1, borderRadius:7, padding: 20, marginTop: 25, marginBottom: 25}}>
             </TextInput>
-            <DropDownPicker open={false}
-            style= {{marginBottom: 20, height: 60}}
-             items={['Fan', 'Wifi', 'Air-Conditioner', 'Lightburb', 'Others']}
-             setOpen={()=>{open=true}} />
+            <DropDownPicker 
+            placeholder='Select device type'
+            style= {{marginBottom: 20, height: 60, zIndex:2, paddingLeft: 20}}
+            selectedItemLabelStyle={{
+                fontWeight: "bold"
+              }}
+            
+            autoScroll={true}
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+
+            onSelectItem ={(item) => setNewDevice({ ...newDevice,deviceType: item.value,})}
+            setItems={setItems} />
       </AddModal>
 
         </SafeAreaView>

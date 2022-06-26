@@ -29,6 +29,8 @@ export default function Main(){
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontStyle: 'italic',
+            fontSize: 25
           },
            tabBarStyle: {
                position: 'absolute',

@@ -1,9 +1,13 @@
 import {StyleSheet,Text, View, Touchable, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native'
 
-export default function Profile(){
+export default function Profile({navigation}){
+  
+
+
+
     return(
     <SafeAreaView style={[{flex: 1}]}>
-        <View style={[style.container]}>
+        <ScrollView style={[style.container]}>
        
         <View style={{marginBottom: 60}}>
             <Image style={style.userImg} source={require('../../../assets/avatar/meo.jpg')}></Image>
@@ -21,10 +25,12 @@ export default function Profile(){
            <TouchableOpacity style={[style.button,{backgroundColor: '#CFE9EC'}]}>
             <View><Text style={style.userBtnTxt}>Change your password</Text></View>
            </TouchableOpacity>
-           <TouchableOpacity style={[style.button,{backgroundColor: '#EE968D'}]}>
+           <TouchableOpacity
+            onPress={()=>navigation.navigate('Login')}
+            style={[style.button,{backgroundColor: '#EE968D'}]}>
             <View><Text style={style.userBtnTxt}>Logout</Text></View>
            </TouchableOpacity>
-        </View></SafeAreaView>
+        </ScrollView></SafeAreaView>
        
     )
 }
@@ -34,7 +40,7 @@ const style = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       padding: 20,
-      alignItems: 'center',
+    //  alignItems: 'center',
       paddingTop:80
   
     },

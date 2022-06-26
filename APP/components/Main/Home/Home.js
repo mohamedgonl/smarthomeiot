@@ -55,6 +55,7 @@ const rooms = [{
     name: 'Kitchen'
 },
 ]
+
 const Room = ({room,navigation}) => {
     const devices = room.item.devices
       return ( 
@@ -90,8 +91,12 @@ const Room = ({room,navigation}) => {
 export default function Home({navigation}) { 
 
     const [visible, setVisible] = useState(false);
-    const [newRoom, setNewRoom] = useState('');
-
+    const [newRoom, setNewRoom] = useState({
+        name: ''
+    });
+    const addNewRoom = () => {
+        console.log(newRoom);
+    }
    
         
     return (
@@ -121,32 +126,35 @@ export default function Home({navigation}) {
        style={{
         display: 'flex',
         flexDirection :'column',
-        borderRadius: 25,
+        borderRadius: 35,
         position: 'absolute',
         right: 10,
-        bottom: 150, 
+        bottom: 130, 
         backgroundColor: 'pink'
        }}>  
 
         <TouchableOpacity onPress={()=>setVisible(true)}>
-            <IconEntypo name="plus" size={40} color={'white'} ></IconEntypo>
+            <IconEntypo name="plus" size={50} color={'white'} ></IconEntypo>
         </TouchableOpacity>
        
        </View>
       <AddModal
       visible={visible}
-      info = {newRoom}
       hide = {()=>{setVisible(false)}}
-      api = {``}
+       submit= {()=>addNewRoom()}
       headerTitle={'Add a new room'}>
             <TextInput placeholder="Room's name"    placeholderTextColor="#003f5c" 
-            autoFocus={true} onChangeText={text => setNewRoom(text)}
+            autoFocus={true} onChangeText={text => setNewRoom({name: text})}
             style={{height: 60, borderColor: 'black',borderWidth:1, borderRadius:25, padding: 20, marginTop: 25, marginBottom: 25}}>
             </TextInput>
       </AddModal>
         </SafeAreaView>
     )
 }
+
+
+
+
 
 
 const styles = StyleSheet.create({
