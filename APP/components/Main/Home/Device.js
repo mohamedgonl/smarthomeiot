@@ -1,7 +1,7 @@
 import {Text, View, SafeAreaView} from 'react-native'
 import {useState} from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {ColorMode,ControlSlider,ModePicker,StatusView} from './ControlView'
+import {ColorMode,ControlSlider,ModePicker,StatusView} from './ControlComponents'
 
 export default function Device(){
     const [deviceInfo, setDeviceInfo] = useState({
