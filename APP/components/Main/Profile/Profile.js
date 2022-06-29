@@ -1,55 +1,59 @@
 import axios from 'axios';
-import {StyleSheet,Text, View, ActivityIndicator, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native'
+import {StyleSheet,Text, View, ActivityIndicator, Image, TouchableOpacity, SafeAreaView, ScrollView, RefreshControl} from 'react-native'
 import {useState, useEffect} from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Profile({navigation}){
   
-  var accountId = '62a93002ff29dfa62adcf17b'
-  
+  const [accountId, setAccountId] = useState('');
+   AsyncStorage.getItem('accountId',(err,res)=>{
+      setAccountId(res)
+     })
   const [accountInfo, setAccountInfo] = useState({
       fullname: '',
       phone: ''
   });
   const [loading, setLoading] = useState(false);
-
+ 
   const loadAccountInfo = async () => {
-   
-    const url = 'https://smarthome-iot-hust.herokuapp.com/account/'+accountId;
-    setLoading(true)
+    
     try {
-     await axios.get(url)
-        .then(res => res.data)
+    console.log(accountId);
+     setLoading(true);
+     var url = 'https://smarthome-iot-hust.herokuapp.com/account/'+accountId;
+     axios.get(url)
+        .then(res => res.data.accountInfo)
         .then(data => {
-               console.log(data);
-               setAccountInfo({fullname: data.fullname, phone: data.phone})
-               console.log(accountInfo);
-               setLoading(false) 
+               setAccountInfo({fullname: data.fullname, phone: data.phone});
+               setLoading(false) ;
               })
         }
     catch (err) {
       console.log(err);
     }
-    useEffect(() => { 
-      console.log('call load info');
-      loadAccountInfo();
-    }, [accountInfo]);
+
   }
+   useEffect(() => { 
+      loadAccountInfo();
+    }, [accountId]);
+
+
+
     return(
     <SafeAreaView style={[{flex: 1}]}>
       {loading?<ActivityIndicator style={{flex: 1, justifyContent:'center'}}></ActivityIndicator>
       :<>
       
-      <ScrollView style={[style.container]}>
+      <ScrollView
+     
+      style={[style.container]}>
        
         <View style={{marginBottom: 60}}>
             <Image style={style.userImg} source={require('../../../assets/avatar/meo.jpg')}></Image>
-            <Text style={style.userName}>{accountInfo.fullname}</Text>
+            <Text style={style.userName}>Name: {accountInfo.fullname||'No Infomation'}</Text>
             {/* <Text style={style.email}>Email</Text> */}
-            <Text style={style.email}>{accountInfo.phone}</Text>
+            <Text style={style.email}>Phone: {accountInfo.phone||'No Infomation'}</Text>
         </View>
-            
-       
-          
-          
+      
            <TouchableOpacity style={[style.button,{backgroundColor: '#F2F4E7'}]}>
             <Text style={style.userBtnTxt}>Edit your profile</Text>
            </TouchableOpacity>

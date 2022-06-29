@@ -1,28 +1,54 @@
 
-import { SafeAreaView, StyleSheet, Dimensions, View, Text,TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, View, Text,TouchableOpacity,ScrollView, TextInput, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import {useState, useEffect} from "react";
 import {FlatList} from "react-native-gesture-handler";
 import * as shape from 'd3-shape'
-import { LineChart } from 'react-native-svg-charts'
+import { LineChart } from 'react-native-svg-charts';
+import IconFoundation from 'react-native-vector-icons/Foundation';
 import * as theme from '../../../outsource/theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import AddModal from "./AddModal";
 import DropDownPicker from 'react-native-dropdown-picker';
+import axios from 'axios';
 
 const width = Dimensions.get('window').width / 2 -10;
 
 
-const Device = ({device,navigation}) => {
+const Device = ({device,navigation,roomId,reload}) => {
   device = device.item
+  console.log(device);
+  const deviceId = device._id
+  const showConfirmDeleteDevice = () => {
+    return Alert.alert('Are you sure?','Are you sure delete this device?',
+    [{text: 'YES',onPress: ()=>deleteRoom()},{text: 'NO'}]);
+  }
+  const deleteRoom = async () => {
+        
+    try {
+        const url = 'https://smarthome-iot-hust.herokuapp.com/room/'+roomId+'/'+deviceId;
+        await  axios.delete(url)
+        .then(res => res.data)
+        .then(data => {
+            console.log(data);
+            reload();
+        })
+    } catch (err) {
+        console.log(err);
+    }
+  }
   return ( 
     
   <TouchableOpacity
     onPress={()=>navigation.navigate('Device')}
   ><View
     style={styles.card}>
+       <TouchableOpacity style={{position:'absolute', right: 0, top: -3}}
+            onPress={()=>showConfirmDeleteDevice()}>
+                <IconFoundation size={25} color='red' name="x-circle"></IconFoundation>
+            </TouchableOpacity>
         <View style={{height: 90, alignItems: "center", justifyContent:'center'}}>
-            <Icon size={80} name={device.deviceType.toLowerCase()} color={'#F16700'}></Icon>
+            <Icon size={80} name={device.deviceType.toLowerCase()==""?'new-box':device.deviceType.toLowerCase()} color={'#F16700'}></Icon>
         </View>
         <Text style={{
             alignSelf: 'center',
@@ -34,68 +60,119 @@ const Device = ({device,navigation}) => {
         </Text>
     </View></TouchableOpacity>)
 }
-  const devices = [{
-        deviceName: 'Quạt siêu xịn',
-        deviceType: 'Fan',
-    },
-    {
-        deviceName: 'Wifi siêu xịn',
-        deviceType: 'Wifi',
-    },
-    {
-        deviceName: 'Điều hòa siêu xịn',
-        deviceType: 'air-conditioner',
-    },
-    {
-        deviceName: 'Đèn siêu xịn',
-        deviceType: 'lightbulb-on-outline',
-    },
-    {
-        deviceName: 'Thiết bị mới',
-        deviceType: 'new-box',
-    }] 
-    const temperature = '34';
 
-export default function Room ({navigation}) {
-   
-    const [visible, setVisible] = useState(false);
-    const addNewDevice = () =>{
-      console.log(newDevice);
+
+export default function Room ({navigation,route}) {
+  const {roomId} = route.params;
+  const [devices, setDevices] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('othes');
+  const [refreshing, setRefreshing] = useState(false);     
+  const [items, setItems] = useState([
+        {label: 'Air-conditioner', value: 'air-conditioner'},
+        {label: 'Fan', value: 'fan'},
+        {label: 'Wifi', value: 'wifi'},
+        {label: 'Lightburlb', value: 'light'},
+        {label: 'Temperature sensor', value: 'temperature'},
+        {label: 'Humidity sensor', value: 'humidity'},
+        {label: 'Others', value: 'others'},
+     ]);
+  const [loading, setLoading] = useState(false);
+  const [newDevice, setNewDevice] = useState({
+    deviceName: '',
+    deviceType: '',
+  });
+  const [reload, setReload] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [temperature, setTemperature] = useState('?');
+  const [humidities, setHumidities] = useState([]);
+
+  useEffect(() => {  
+     getRoomData();
+    }, [reload]);
+  
+  const getRoomData = async () => {
+        try {
+          console.log('Room id: ', roomId);
+          setLoading(true)
+          const url ='https://smarthome-iot-hust.herokuapp.com/room/' +roomId;
+          const urltemp = 'https://smarthome-iot-hust.herokuapp.com/room/temperature/'+roomId;
+          const urlhumi = 'https://smarthome-iot-hust.herokuapp.com/room/humidity/'+roomId;
+          await axios.all([
+            axios.get(url),
+            axios.get(urltemp),
+            axios.get(urlhumi),
+          ])
+          .then(axios.spread((...response)=> {
+            const devices = response[0].data.room.devices
+            setDevices(devices)
+            const temperature = response[1].data.temperature.value;
+            setTemperature(temperature)
+          }))
+          .finally(()=>{
+           setLoading(false);
+          })
+        } catch (err) {
+          console.log('get room data err:',err);
+        }
     }
-    const data = {
-        datasets: [
-          {
-            data: [20, 45, 28, 80, 99, 43],
-            color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-            strokeWidth: 2 // optional
+
+    const addNewDevice = async () =>{
+      if(newDevice.deviceName == '') Alert.alert('Please input device name');
+      else if(newDevice.deviceType == '') Alert.alert('Please select device type');
+      else {
+      try {
+        setLoading(true);
+        const url = 'https://smarthome-iot-hust.herokuapp.com/device';
+        const data = {
+          roomId: roomId,
+          deviceInfo : {
+            deviceName: newDevice.deviceName,
+            deviceType: newDevice.deviceType,
           }
-        ],
-      };
-      const [open, setOpen] = useState(false);
-      const [value, setValue] = useState(null);     
-      const [items, setItems] = useState([
-            {label: 'Air-conditioner', value: 'ccocôcc'},
-            {label: 'Fan', value: 'us12312a'},
-            {label: 'Wifi', value: 'canad2131a'},
-            {label: 'Lightburlb', value: 'e21312u'},
-            {label: 'Others', value: 'norwa12321y'},
-         ]);
-      const [newDevice, setNewDevice] = useState({
-        deviceName: '',
-        deviceType: '',
-      });
-      const hide = () => {
+        }
+        await axios.post(url, data)
+        .then(res=> res.data)
+        .then(data =>{
+          console.log('add new device response: ',data);
+        })
+        .finally(()=>{
+          setReload(reload+1);
+          setLoading(false);
+          hide();
+        })
+      } catch (err) {
+          console.log('add new device err: ',err);
+      }
+    }
+  }
+
+    const hide = () => {
         // reset data form
         setOpen(false);
         setValue(null);
-        setNewDevice(null);
+        setNewDevice({
+          deviceName: '',
+          deviceType: '',
+        });
         setVisible(false);
       }
+
+      
     return(
-        <SafeAreaView>
-         
-            <View style={{flexDirection:'row', flexWrap:'wrap', margin:10}}>
+        <SafeAreaView
+        style={{
+          flex: 1,
+         // marginLeft: 5,
+          marginRight: 5,
+          backgroundColor: 'white'
+      }}> 
+          {loading?<ActivityIndicator style={{justifyContent:'center', flex:1}}></ActivityIndicator>
+          :<>      
+          <View
+             style={{flexDirection:'row', flexWrap:'wrap', margin:10}}>
                 <View style={{ justifyContent: 'center', flex: 1,flexDirection:'row', flexWrap:'wrap',}}>
+                    {}
                     <Text style={{fontSize: 100}}>
                     {`${temperature}`}
                     </Text>
@@ -109,7 +186,7 @@ export default function Room ({navigation}) {
                 <LineChart
                  yMax={100}
                  yMin={0}
-                 data={data.datasets}
+                 data={humidities}
                 style={{ flex: 1 }}
                 curve={shape.curveBasis}
                 bezier
@@ -128,7 +205,9 @@ export default function Room ({navigation}) {
            }}
            numColumns={2} data={devices} 
            renderItem={(item)=><Device
-           device={item} navigation={navigation}>
+           device={item}
+           reload ={()=>setReload(!reload)}
+           roomId={roomId} navigation={navigation}>
 
            </Device>
         }></FlatList>
@@ -139,7 +218,7 @@ export default function Room ({navigation}) {
         borderRadius: 35,
         position: 'absolute',
         right: 10,
-        bottom: 60, 
+        bottom: 120, 
         backgroundColor: '#F16700'
        }}>  
 
@@ -174,7 +253,9 @@ export default function Room ({navigation}) {
 
             onSelectItem ={(item) => setNewDevice({ ...newDevice,deviceType: item.value,})}
             setItems={setItems} />
-      </AddModal>
+      </AddModal></>
+          }
+      
 
         </SafeAreaView>
     )

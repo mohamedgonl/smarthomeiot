@@ -19,7 +19,7 @@ export default function Login({navigation}) {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const login =  () => {
+    const login = async  () => {
         try {
         setLoading(true);
         if (username =="" || password == "") {
@@ -29,29 +29,28 @@ export default function Login({navigation}) {
             setLoading(false);
             return;
         }
-
         const url = 'https://smarthome-iot-hust.herokuapp.com/account/login'
-         axios.post(url, {
+        await   axios.post(url, {
             username: username,
             password: password
         })
         .then(res => res.data)
         .then((data) => {
             if (data.status == "OK") {
-              
-                setUsername('')
-                setPassword('')
-                setLoading(false)
-                navigation.navigate('Main', data.accountId)
+                AsyncStorage.setItem('accountId',data.accountId);
+                navigation.navigate('Main');
             } else {
                 Alert.alert("Username or password is wrong!")
-                setUsername('')
-                setPassword('')
-                setLoading(false);
+                
             }
         }).catch(err => {
             console.log(err);
             Alert.alert("Something error :(")
+        })
+        .finally(()=>{
+                setUsername('')
+                setPassword('')
+                setLoading(false);
         })
         } catch (error) {
             console.log(error);

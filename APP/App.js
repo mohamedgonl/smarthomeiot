@@ -8,6 +8,7 @@ import Register from './components/Log/Register';
 import React from 'react'
 import LandingPage from './components/LandingPage/Landing'
 import Main from './components/Main/Main'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const MainNavigator = createStackNavigator({
   
@@ -24,6 +25,7 @@ import Main from './components/Main/Main'
 const Stack = createNativeStackNavigator()
 
 export default function App() {
+  AsyncStorage.clear()
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}} > 

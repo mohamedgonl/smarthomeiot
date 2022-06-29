@@ -3,6 +3,7 @@ const { findByIdAndUpdate } = require('../models/Devices');
 const broker = 'mqtt://broker.hivemq.com:1883';
 const topic = 'control';
 const Devices = require("../models/Devices");
+const Rooms = require('../models/Rooms');
 const options = {
     // Clean session
     clean: true,
@@ -12,6 +13,27 @@ const options = {
 }
 const client = mqtt.connect(broker, options);
 const Room = require('../models/Rooms')
+
+
+
+const getData = async (req,res) => {
+    try {
+        res.status(200).json({
+            status: 'OK',
+            msg: 'Get Data success',
+            value: value
+        })
+
+        
+
+    } catch (err) {
+        res.status(500).json({
+            status: "ERR",
+            msg: 'Server Error',
+            error: err
+        })
+    }
+}
 
 const control = async (req, res) => {
     try {
@@ -83,7 +105,7 @@ const deleteDevice = async(req,res) =>{
         const {deviceId, roomId} = req.body;
         await Room.findByIdAndUpdate({_id: roomId},{
             $pull: {
-                devices: deviceId
+                devices: [{_id: deviceId}]
             }
         })
         res.status(200).json({
@@ -120,5 +142,5 @@ const updateData = async (data) => {
 }
 
 module.exports = {
-    control,createDevice, deleteDevice, getDevice, updateData
+    getData,control,createDevice, deleteDevice, getDevice, updateData
 }
