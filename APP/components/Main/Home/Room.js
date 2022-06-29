@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, Dimensions, View, Text,TouchableOpacity,Scrol
 import {useState, useEffect} from "react";
 import {FlatList} from "react-native-gesture-handler";
 import * as shape from 'd3-shape'
-import { LineChart } from 'react-native-svg-charts';
+import {LineChart} from 'react-native-svg-charts'
 import IconFoundation from 'react-native-vector-icons/Foundation';
 import * as theme from '../../../outsource/theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,7 +17,6 @@ const width = Dimensions.get('window').width / 2 -10;
 
 const Device = ({device,navigation,roomId,reload}) => {
   device = device.item
-  console.log(device);
   const deviceId = device._id
   const showConfirmDeleteDevice = () => {
     return Alert.alert('Are you sure?','Are you sure delete this device?',
@@ -30,7 +29,6 @@ const Device = ({device,navigation,roomId,reload}) => {
         await  axios.delete(url)
         .then(res => res.data)
         .then(data => {
-            console.log(data);
             reload();
         })
     } catch (err) {
@@ -40,7 +38,7 @@ const Device = ({device,navigation,roomId,reload}) => {
   return ( 
     
   <TouchableOpacity
-    onPress={()=>navigation.navigate('Device')}
+    onPress={()=>navigation.navigate('Device',deviceId)}
   ><View
     style={styles.card}>
        <TouchableOpacity style={{position:'absolute', right: 0, top: -3}}
@@ -66,15 +64,15 @@ export default function Room ({navigation,route}) {
   const {roomId} = route.params;
   const [devices, setDevices] = useState([]);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('othes');
+  const [value, setValue] = useState('others');
   const [refreshing, setRefreshing] = useState(false);     
   const [items, setItems] = useState([
         {label: 'Air-conditioner', value: 'air-conditioner'},
         {label: 'Fan', value: 'fan'},
         {label: 'Wifi', value: 'wifi'},
-        {label: 'Lightburlb', value: 'light'},
-        {label: 'Temperature sensor', value: 'temperature'},
-        {label: 'Humidity sensor', value: 'humidity'},
+        {label: 'Lightburlb', value: 'lightbulb-on'},
+        {label: 'Temperature sensor', value: 'temperature-celsius'},
+        {label: 'Humidity sensor', value: 'air-humidifier'},
         {label: 'Others', value: 'others'},
      ]);
   const [loading, setLoading] = useState(false);
@@ -85,7 +83,10 @@ export default function Room ({navigation,route}) {
   const [reload, setReload] = useState(0);
   const [visible, setVisible] = useState(false);
   const [temperature, setTemperature] = useState('?');
-  const [humidities, setHumidities] = useState([]);
+   const [data, setData] = useState([]);
+
+
+
 
   useEffect(() => {  
      getRoomData();
@@ -93,7 +94,6 @@ export default function Room ({navigation,route}) {
   
   const getRoomData = async () => {
         try {
-          console.log('Room id: ', roomId);
           setLoading(true)
           const url ='https://smarthome-iot-hust.herokuapp.com/room/' +roomId;
           const urltemp = 'https://smarthome-iot-hust.herokuapp.com/room/temperature/'+roomId;
@@ -108,6 +108,13 @@ export default function Room ({navigation,route}) {
             setDevices(devices)
             const temperature = response[1].data.temperature.value;
             setTemperature(temperature)
+            const data = response[2].data.humidities;
+            const timeLables = data.map(e => e.createAt)
+            const humidities = data.map(e => parseFloat(e.value))
+
+             setData([...humidities]);
+            // console.log('Humidities data: ',data);
+
           }))
           .finally(()=>{
            setLoading(false);
@@ -171,26 +178,27 @@ export default function Room ({navigation,route}) {
           :<>      
           <View
              style={{flexDirection:'row', flexWrap:'wrap', margin:10}}>
-                <View style={{ justifyContent: 'center', flex: 1,flexDirection:'row', flexWrap:'wrap',}}>
+                <View style={{ justifyContent: 'center', flex: 1,flexDirection:'row', flexWrap:'wrap'}}>
                     {}
-                    <Text style={{fontSize: 100}}>
+                    <Text style={{fontSize: 100 ,color: temperature>37?'red':'black'}}>
                     {`${temperature}`}
                     </Text>
-                    <Text style={{fontSize: 40}}>
+                    <Text style={{fontSize: 40,color: temperature>37?'red':'black'}}>
                     °C
                     </Text >
                 </View>
               
-            <View style={{flex: 1}}>
-                <Text style={{fontSize: 20, textAlign:'center', fontStyle: 'italic' }}>Humidity</Text>
+            <View style={{flex: 1, borderWidth: 1,borderColor: 'black', padding: 5, borderStyle: 'dashed'}}>
+                <Text style={{fontSize: 20, textAlign:'center', fontStyle: 'italic' }}>{`Humidity: ${data[data.length-1]||'?'}%`}</Text>
                 <LineChart
-                 yMax={100}
-                 yMin={0}
-                 data={humidities}
-                style={{ flex: 1 }}
-                curve={shape.curveBasis}
-                bezier
-                svg={{ stroke: theme.colors.accent, strokeWidth: 3 }}
+                    yMax={100}
+                    yMin={0}
+                  showGrid = {true}
+                    data={data}
+                   style={{ flex: 1 }}
+                   curve={shape.curveBasis}
+                   bezier
+                   svg={{ stroke: 'rgb(134, 65, 244)'||theme.colors.accent, strokeWidth: 3 }}
             />
             </View>
             </View>

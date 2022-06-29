@@ -37,16 +37,11 @@ const StatusView = ({isEnabled,setIsEnabled}) => {
       </View>
     )
 }
-const ModePicker = () => {
+const ModePicker = ({modes}) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);     
-    const [items, setItems] = useState([
-          {label: 'Cực mạnh', value: '1'},
-          {label: 'Mạnh', value: '2'},
-          {label: 'Vừa', value: '3'},
-          {label: 'Nhẹ', value: '4'},
-          {label: 'Cực nhẹ', value: '5'},
-       ]);
+    const [items, setItems] = useState([...modes]);
+
     return ( 
     <View style={{flexDirection:'row', flexWrap:'wrap',  marginTop: 10, padding: 10, zIndex: 5}}>
         <Text  style={{ width: 100,alignSelf: 'flex-end', fontSize: 20, fontWeight: '500', fontStyle:'italic', marginRight:25, marginLeft:10, paddingBottom:10, width:100}}>Mode:</Text>

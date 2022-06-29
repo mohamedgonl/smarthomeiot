@@ -13,7 +13,7 @@ const getTemperature = async (req,res) => {
         var value;
         for (let i = 0; i < devices.length; i++) {
             const device = await Devices.findById(devices[i]);
-            if(device.deviceType == 'temperature') {
+            if(device.deviceType == 'temperature-celsius') {
                 var data = device.data;
                 value = data[data.length - 1];
                 console.log(value);
@@ -43,26 +43,28 @@ const getHumidity = async (req,res) => {
         for (let i = 0; i < devices.length; i++) {
             let device = await Devices.find({
                 _id : devices[i],
-                deviceType: 'humidity'
+                deviceType: 'air-humidifier'
             },{
                 data: {
                     $slice: -10
                 }
             });
             if(device.length != 0){
-                 console.log('Device nhan: ', device);
-                 humidities = device
+                 humidities = device[0].data
+                 humidities = humidities.map(e => { return {value: e.value, createAt: e.createAt}} )
                 break;
             } 
         }
-        console.log(humidities);
 
         res.status(200).json({
             ok: 'OK',
+            msg: 'Get last 10 humidities data success',
             humidities: humidities
         });
     } catch (err) {
         res.status(500).json({
+            status: 'ERR',
+            msg: 'Server error',
             error: err
         });
     }
@@ -94,6 +96,7 @@ const removeDevice = async (req,res) => {
                 devices: [{_id: deviceId}]
             }
         })
+      //  await Devices.deleteMany({_id: deviceId})
         res.status(200).json({
             status: 'OK',
             msg: 'Remove device from room success'

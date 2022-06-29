@@ -1,23 +1,64 @@
-import {Text, View, SafeAreaView} from 'react-native'
-import {useState} from 'react'
+import {Text, View, SafeAreaView, ActivityIndicator} from 'react-native'
+import {useState, useEffect} from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {ColorMode,ControlSlider,ModePicker,StatusView} from './ControlComponents'
+import axios from 'axios';
 
-export default function Device(){
+export default function Device({navigation, route}){
+    const deviceId = route.params;
     const [deviceInfo, setDeviceInfo] = useState({
-        deviceName: 'Quạt siêu xịn',
-        deviceType: 'Fan'
+        deviceName: '',
+        deviceType: ''
     });
     const [control, setControl] = useState({
         status: false,
         mode :'',
-        direction: 80,
-        speed : 21,
-        intensity: 100
+        direction: 0,
+        speed : 0,
+        intensity: 0
     });
+    const [reload, setReload] = useState(0);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        getDeviceData()
+    }, [reload]);
+
+    const getDeviceData = async () => {
+        try {
+            setLoading(true);
+            const url = 'https://smarthome-iot-hust.herokuapp.com/device/'+deviceId;
+            await axios.get(url)
+            .then(res => res.data.deviceInfo)
+            .then(data => {
+                setDeviceInfo({
+                    deviceName: data.deviceName,
+                    deviceType: data.deviceType
+                })
+                setControl({
+                    status: data.control.status =='off'? false: true,
+                    mode: data.control.mode,
+                    direction: data.control.direction,
+                    speed: data.control.speed,
+                    intensity: data.control.intensity
+                })
+            })
+            .finally(()=>{
+                setLoading(false)
+            })
+        } catch (err) {
+            console.log('err here',err);
+        }
+    }
+
+
+
+
     return(
         <SafeAreaView style={{flex: 1, marginBottom: 110, paddingBottom: 50}}>
-        {!control.status ? 
+            {loading?<ActivityIndicator style={{flex:1, justifyContent: 'center'}}></ActivityIndicator>:
+            <>
+            {!control.status ? 
         // Unenable View
         <View style= {{flex: 1, justifyContent: 'center', padding: 30, paddingTop: 0, paddingBottom: 90, alignItems: 'center'}}>
         <Text style={{fontSize: 25, fontStyle: 'italic', fontWeight: '500', marginBottom: 20, textAlign: 'center'}}>The device <Text style={{color: 'red'}}>{deviceInfo.deviceName}</Text> is off</Text>
@@ -38,6 +79,8 @@ export default function Device(){
         </View>
          
         }
+            </>}
+        
         
         </SafeAreaView>
        
@@ -48,27 +91,39 @@ export default function Device(){
 
 const ControlView = ({type, control}) => {
     switch (type) {
-        case 'Fan':
+        case 'fan':
             return(
                 <View>
-                    <ModePicker></ModePicker>
+                    <ModePicker modes={[
+          {label: 'Cực mạnh', value: '1'},
+          {label: 'Mạnh', value: '2'},
+          {label: 'Vừa', value: '3'},
+          {label: 'Nhẹ', value: '4'},
+          {label: 'Cực nhẹ', value: '5'},
+       ]}></ModePicker>
                     <ControlSlider name={'Speed'} value={control.speed} max={100}></ControlSlider>
                     <ControlSlider name={'Direction'} value={control.direction} max={180}></ControlSlider>
                 </View>
             )
-        case 'Air-conditioner':
+        case 'air-conditioner':
+          
+
             return(
                 <View>
-                    <ModePicker></ModePicker>
+                    <ModePicker  ></ModePicker>
                     <ControlSlider name={'Speed'} value={control.speed} max={100}></ControlSlider>
                     <ControlSlider name={'Direction'} value={control.direction} max={180}></ControlSlider>
                     <ControlSlider name={'Temperature'} value={control.intensity} max={100}></ControlSlider>
                 </View>
             )
-        case 'Light':
+        case 'lightbulb-on': 
+             const modes = [
+                         {label: '1 màu', value: '1'},
+                         {label: 'Nhấp nháy', value: '2'},
+                         {label: '7 sắc cầu vồng', value: '3'} ];
             return(
                     <View>
-                        <ModePicker></ModePicker>
+                        <ModePicker modes={modes}></ModePicker>
                         <ColorMode></ColorMode>
                     </View>
                 )
