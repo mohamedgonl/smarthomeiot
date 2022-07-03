@@ -52,7 +52,7 @@ export default function Main(){
                             <Text style={{color:  focused? '#e32f45' :'#748c94', fontSize: 12}} >Home</Text>
                     </View>
                     )}}/>
-            <Tab.Screen name="Statics" component={Statis} options={{tabBarIcon: ({focused}) => (
+            <Tab.Screen name="Statis" component={Statis} options={{tabBarIcon: ({focused}) => (
                     <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
                      <IconAntDesign name="linechart" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
                     <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Statis</Text>
