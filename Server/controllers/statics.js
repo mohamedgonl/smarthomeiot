@@ -1,6 +1,6 @@
 const Devices = require("../models/Devices")
-
-
+const Rooms = require('../models/Rooms')
+const Home = require('../models/Homes')
 
 const getLastHour= async (req,res) => {
 
@@ -29,6 +29,28 @@ const getLastHour= async (req,res) => {
   
 }
 
+
+const getlast100 = async (req,res) => {
+    try {
+        const {type, homeId} = req.params;
+        type == 'temperature' ? 'temperature-celsius' : 'air-humidifier'
+        const home = await Home.findById(homeId);
+        const rooms = home.rooms.map(e=>{
+             Rooms.findById(e)
+        })
+        res.status(200).json({
+            ok: 'OK',
+            msg: 'Get last 100 data success',
+            data: data
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'ERR',
+            msg: 'Server error',
+            error: err
+        });
+    }
+}
 
 const dayStatics = (req, res) => {
     try {
@@ -63,4 +85,4 @@ const monthStatics = (req,res) => {
     }
 }
 
-module.exports = {dayStatics,weekStatics,monthStatics,getLastHour}
+module.exports = {dayStatics,weekStatics,monthStatics,getLastHour, getlast100}

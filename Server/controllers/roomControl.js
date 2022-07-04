@@ -142,5 +142,27 @@ const createRoom = async (req,res) => {
         })
     }
 }
+const addExitedDevice = async (req, res) => {
+    try {
+        console.log('go here');
+        const {roomId, deviceId} = req.body;
+        await Rooms.findByIdAndUpdate(roomId,{
+            $push: {
+                devices: deviceId
+            }
+        })
+        res.status(200).json({
+            status: 'OK',
+            msg: 'Add new device success',
+            deviceId: deviceId
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: 'ERR',
+            msg: 'Add device failed',
+            error: err
+        })
+    }
+}
 
-module.exports = {getRoomData,createRoom, getTemperature, removeDevice, getHumidity}
+module.exports = {getRoomData,createRoom, getTemperature, removeDevice, getHumidity, addExitedDevice}

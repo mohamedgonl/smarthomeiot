@@ -44,7 +44,9 @@
     "react-native-wheel-color-picker": "^1.2.0",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
-    "store": "^2.0.12"
+    "store": "^2.0.12",
+    "react-native-web": "0.17.7",
+    "expo-barcode-scanner": "~11.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

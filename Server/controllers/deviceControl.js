@@ -39,9 +39,9 @@ const control = async (req, res) => {
     try {
         const {deviceId, ...control} = req.body;
         console.log('deviceid: ',deviceId);
-        console.log('control: ',control);
-        await Devices.findByIdAndUpdate({_id: deviceId},{
-            control: control
+        console.log('control: ',control.control);
+        await Devices.findByIdAndUpdate( deviceId,{
+            control: {...control.control}
         })
         // client.on('connect', () => {
         // console.log('Connected broker')
@@ -54,7 +54,7 @@ const control = async (req, res) => {
         })
         // })
         console.log(control);
-        res.status(200).json({status: 'OK',msg:'Send control signal success!', control : control})
+        res.status(200).json({status: 'OK',msg:'Send control signal success!', control : control.control})
     } catch (err) {
         res.status(500).json({status: 'ERR', msg: 'Server Error!',error: err})
     }
@@ -80,6 +80,7 @@ const getDevice = async (req,res) => {
         })
     }
 }
+
 const createDevice = async (req,res) => {
     try {
         const {deviceInfo, roomId} = req.body;

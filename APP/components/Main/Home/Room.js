@@ -235,6 +235,23 @@ export default function Room ({navigation,route}) {
         </TouchableOpacity>
        
        </View>
+       <View
+       style={{
+        display: 'flex',
+        flexDirection :'column',
+        borderRadius: 35,
+        position: 'absolute',
+        right: 10,
+        bottom: 180, 
+        backgroundColor: '#F16700',
+        padding: 5
+       }}>  
+
+        <TouchableOpacity onPress={()=>navigation.navigate('QRScanner', roomId)}>
+            <Icon name="qrcode-scan" size={40} color={'white'} ></Icon>
+        </TouchableOpacity>
+       
+       </View>
       <AddModal
       
       visible={visible}

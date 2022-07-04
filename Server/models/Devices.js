@@ -21,24 +21,24 @@ const devices = mongoose.Schema({
     }],
     control: {
         status: {
-            type: String,
-            default: 'off'
+            type: Boolean,
+            default: false
         },
         mode: {
             type: String,
-            default: ''
+            default: '1'
         },
         direction: {
-            type: String,
-            default: ''
+            type: Number,
+            default: 0
         },
         speed: {
-            type: String,
-            default: ''
+            type: Number,
+            default: 0
         },
         intensity: {
-            type: String,
-            default: ''
+            type: Number,
+            default: 0
         }
 
     }
