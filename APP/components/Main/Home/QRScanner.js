@@ -3,26 +3,26 @@ import { Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 
-export default function QRScanner({navigation, roomId}) {
-  console.log(roomId);
+export default function QRScanner({navigation, route}) {
+  const {roomId} = route.params
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
 
-  const addDevice =(deviceId) =>{
+  const addDevice = async (deviceId) =>{
     try {
-      const url = 'https://smarthome-iot-hust.herokuapp.com/room';
+      const url = 'https://smarthome-iot-hust.herokuapp.com/room/adddevice';
       const data = {
         roomId: roomId,
         deviceId : deviceId
       }
-      axios.post(url, data)
+      await axios.post(url, data)
       .then(res=> res.data)
       .then(data =>{
         if(data.status == 'OK') Alert.alert('Add new device succcess!','',[{text: 'OK', onPress: ()=>navigation.goBack()}])
       })
     } catch (err) {
-        console.log('add new device err: ',err);
+        console.log('add device err: ',err);
     }
   }
 
@@ -43,8 +43,8 @@ export default function QRScanner({navigation, roomId}) {
         .then(res=>res.data)
         .then(data => {
             const deviceInfo = data.deviceInfo
-            const showConfirmAddDevice = () => Alert.alert('Are you sure?','Are you sure add this device?',
-                [{text: 'YES',onPress: ()=>addDevice()},{text: 'NO'}]);
+            const showConfirmAddDevice = () => Alert.alert('Do you want to add this device to the room?','',
+                [{text: 'YES',onPress: ()=>addDevice(deviceId)},{text: 'NO'}]);
             Alert.alert('Device found',`Device name: "${deviceInfo.deviceName}" Device type: "${deviceInfo.deviceType}"`,[{text:'OK', onPress: showConfirmAddDevice}])
         })
     } catch (err) {

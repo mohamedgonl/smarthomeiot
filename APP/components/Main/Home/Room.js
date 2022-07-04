@@ -215,10 +215,10 @@ export default function Room ({navigation,route}) {
            renderItem={(item)=><Device
            device={item}
            reload ={()=>setReload(!reload)}
-           roomId={roomId} navigation={navigation}>
-
-           </Device>
-        }></FlatList>
+           roomId={roomId} navigation={navigation}> </Device>
+        }   
+        refreshControl={<RefreshControl refreshing = {refreshing}
+         onRefresh={()=>setReload(reload+1)}></RefreshControl>}></FlatList>
          <View
        style={{
         display: 'flex',
@@ -247,7 +247,7 @@ export default function Room ({navigation,route}) {
         padding: 5
        }}>  
 
-        <TouchableOpacity onPress={()=>navigation.navigate('QRScanner', roomId)}>
+        <TouchableOpacity onPress={()=>navigation.navigate('QRScanner', {roomId: roomId})}>
             <Icon name="qrcode-scan" size={40} color={'white'} ></Icon>
         </TouchableOpacity>
        
