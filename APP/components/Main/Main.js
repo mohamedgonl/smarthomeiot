@@ -2,12 +2,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import IconFontAwesom from 'react-native-vector-icons/FontAwesome';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import IconEntypo from 'react-native-vector-icons/Entypo';
+import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import {StyleSheet,Text, View,} from 'react-native'
 import Mic from './Mic/Mic';
 import Statis from './Statis/Statis'
 import Profile from './Profile/Profile';
 import { HomeTabs } from './Home/HomeTabs';
-
+import Weather from './Weather/Weather'
 
 
 
@@ -23,14 +24,14 @@ export default function Main(){
            headerShown: true ,
            headerTitle: `YOUR SMART HOME` ,
            headerStyle: {
-            backgroundColor: 'pink',
+            backgroundColor: '#EAF8F9',
          
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
-            fontWeight: 'bold',
-            fontStyle: 'italic',
-            fontSize: 25
+            fontWeight: '500',
+            fontSize: 25,
+            color: '#223131'
           },
            tabBarStyle: {
                position: 'absolute',
@@ -52,10 +53,10 @@ export default function Main(){
                             <Text style={{color:  focused? '#e32f45' :'#748c94', fontSize: 12}} >Home</Text>
                     </View>
                     )}}/>
-            <Tab.Screen name="Statis" component={Statis} options={{tabBarIcon: ({focused}) => (
+            <Tab.Screen name="Weather" component={Weather} options={{tabBarIcon: ({focused}) => (
                     <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
-                     <IconAntDesign name="linechart" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
-                    <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Statis</Text>
+                     <IconMaterial name="weather-partly-cloudy" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
+                    <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Weather</Text>
                     </View >
                     )}} />
             <Tab.Screen name="Mic" component={Mic} options={{  tabBarIcon: ({focused}) => (

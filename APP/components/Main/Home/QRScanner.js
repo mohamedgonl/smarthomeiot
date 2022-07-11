@@ -51,7 +51,7 @@ export default function QRScanner({navigation, route}) {
         console.log(err);
     }
   }
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
     getDeviceInfo(data)
   };

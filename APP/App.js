@@ -28,7 +28,8 @@ export default function App() {
   AsyncStorage.clear()
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}} > 
+      <Stack.Navigator screenOptions={{headerShown: false}} >  
+      
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Landing" component={LandingPage} />
