@@ -23,8 +23,10 @@ export default function Profile({navigation}){
      axios.get(url)
         .then(res => res.data.accountInfo)
         .then(data => {
-               setAccountInfo({fullname: data.fullname, phone: data.phone});
-               setLoading(false) ;
+               setAccountInfo({fullname: data.fullname, phone: data.phone});          
+              })
+        .finally(()=>{
+            setLoading(false) ;
               })
         }
     catch (err) {

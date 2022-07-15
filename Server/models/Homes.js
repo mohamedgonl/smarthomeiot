@@ -6,10 +6,6 @@ const homes = mongoose.Schema({
         type: String,
         default: ''
     },
-    address: {
-        type: String,
-        default: ''
-    },
     rooms: [
         {
             type: mongoose.SchemaTypes.ObjectId,

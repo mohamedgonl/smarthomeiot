@@ -1,15 +1,11 @@
 const mqtt = require('mqtt');
 const { findByIdAndUpdate } = require('../models/Devices');
 const broker = 'mqtt://broker.hivemq.com:1883';
-const topic = 'control';
+const topic = '/control_IOT';
 const Devices = require("../models/Devices");
 const Rooms = require('../models/Rooms');
 const options = {
-    // Clean session
-    clean: true,
-    connectTimeout: 4000,
-    // Auth
-    clientId: 'c373f1a2-3766-4598-b84a-cf401621663e',
+
 }
 const client = mqtt.connect(broker, options);
 const Room = require('../models/Rooms')
@@ -38,6 +34,7 @@ const getData = async (req,res) => {
 const control = async (req, res) => {
     try {
         const {deviceId, ...control} = req.body;
+        
         console.log('deviceid: ',deviceId);
         console.log('control: ',control.control);
         await Devices.findByIdAndUpdate( deviceId,{
@@ -45,7 +42,7 @@ const control = async (req, res) => {
         })
         // client.on('connect', () => {
         // console.log('Connected broker')
-        client.publish(topic, JSON.stringify(control), (err) => {
+        client.publish(topic, JSON.stringify({deviceId: deviceId, control: {...control.control}}), (err) => {
             if (err) 
                 console.log('MQTT publish error: ', err);
              else 

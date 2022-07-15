@@ -158,6 +158,7 @@ const ControlView = ({type, setControl, control}) => {
                          {label: 'One color', value: '1'},
                          {label: 'Blink', value: '2'},
                          {label: 'Rainbow', value: '3'} ]}></ModePicker>
+                        <ControlSlider setControl={handleControlChange}   name={'Intensity'} value={control.speed} field={'speed'} max={100}></ControlSlider>
                         <ColorMode
                         color={control.mode}
                         setControl={handleControlChange}

@@ -82,7 +82,7 @@ export default function Room ({navigation,route}) {
   });
   const [reload, setReload] = useState(0);
   const [visible, setVisible] = useState(false);
-  const [temperature, setTemperature] = useState('?');
+  const [temperature, setTemperature] = useState(0);
    const [data, setData] = useState([]);
 
 
@@ -96,26 +96,30 @@ export default function Room ({navigation,route}) {
         try {
           setLoading(true)
           const url ='https://smarthome-iot-hust.herokuapp.com/room/' +roomId;
-          const urltemp = 'https://smarthome-iot-hust.herokuapp.com/room/temperature/'+roomId;
-          const urlhumi = 'https://smarthome-iot-hust.herokuapp.com/room/humidity/'+roomId;
-          await axios.all([
-            axios.get(url),
-            axios.get(urltemp),
-            axios.get(urlhumi),
-          ])
-          .then(axios.spread((...response)=> {
-            const devices = response[0].data.room.devices
-            setDevices(devices)
-            const temperature = response[1].data.temperature.value;
-            setTemperature(temperature)
-            const data = response[2].data.humidities;
-            const timeLables = data.map(e => e.createAt)
-            const humidities = data.map(e => parseFloat(e.value))
-
-             setData([...humidities]);
-            // console.log('Humidities data: ',data);
-
-          }))
+          await axios.get(url)
+          .then( (res) => res.data)
+          .then((data)=> {
+             const devices = data.room.devices
+             setDevices(devices)
+             var tempDevice;
+             for(let i = 0; i<devices.length;i++){
+                if(devices[i].deviceType == 'temperature-celsius') {
+                  tempDevice = devices[i]
+                  break;
+                } 
+             }
+             let temp =  parseFloat(tempDevice.data[0].value) 
+             setTemperature(temp.toFixed(1))
+             var humiDevice = [];
+             for(let i = 0; i<devices.length;i++){
+                if(devices[i].deviceType == 'air-humidifier') {
+                  humiDevice = (devices[i].data.slice(-10).map(e=>e.value));
+                  break;
+                }
+             }
+             humiDevice = humiDevice.map( e => parseFloat(e))
+             setData(humiDevice)
+          })
           .finally(()=>{
            setLoading(false);
           })
@@ -177,10 +181,10 @@ export default function Room ({navigation,route}) {
           {loading?<ActivityIndicator style={{justifyContent:'center', flex:1}}></ActivityIndicator>
           :<>      
           <View
-             style={{flexDirection:'row', flexWrap:'wrap', margin:10}}>
+             style={{flexDirection:'row', flexWrap:'wrap', margin:10, height: 140}}>
                 <View style={{ justifyContent: 'center', flex: 1,flexDirection:'row', flexWrap:'wrap'}}>
                     {}
-                    <Text style={{fontSize: 100 ,color: temperature>37?'red':'black'}}>
+                    <Text style={{fontSize: 60 ,color: temperature>37?'red':'black'}}>
                     {`${temperature}`}
                     </Text>
                     <Text style={{fontSize: 40,color: temperature>37?'red':'black'}}>

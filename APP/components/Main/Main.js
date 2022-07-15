@@ -1,10 +1,10 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import IconFontAwesom from 'react-native-vector-icons/FontAwesome';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
-import IconEntypo from 'react-native-vector-icons/Entypo';
+import IconIon from 'react-native-vector-icons/Ionicons';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import {StyleSheet,Text, View,} from 'react-native'
-import Mic from './Mic/Mic';
+import Notify from '../Main/Notify/Notify'
 import Statis from './Statis/Statis'
 import Profile from './Profile/Profile';
 import { HomeTabs } from './Home/HomeTabs';
@@ -24,7 +24,7 @@ export default function Main(){
            headerShown: true ,
            headerTitle: `YOUR SMART HOME` ,
            headerStyle: {
-            backgroundColor: '#EAF8F9',
+            backgroundColor: '#5499C7',
          
           },
           headerTintColor: '#fff',
@@ -53,18 +53,25 @@ export default function Main(){
                             <Text style={{color:  focused? '#e32f45' :'#748c94', fontSize: 12}} >Home</Text>
                     </View>
                     )}}/>
+            
+             <Tab.Screen name="Notification" component={Notify} options={{  tabBarIcon: ({focused}) => (
+                    <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center' }}>
+                        <IconIon name="notifications"  size={25}  color = {focused ? '#e32f45' :'#748c94'}/>
+                        <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Notify</Text>
+                    </View  >
+                )}}/>
+                 <Tab.Screen name="Statis" component={Statis} options={{  tabBarIcon: ({focused}) => (
+                    <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center' }}>
+                        <IconFontAwesom name="bar-chart"  size={25}  color = {focused ? '#e32f45' :'#748c94'}/>
+                        <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Statis</Text>
+                    </View  >
+                )}}/>
             <Tab.Screen name="Weather" component={Weather} options={{tabBarIcon: ({focused}) => (
                     <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
                      <IconMaterial name="weather-partly-cloudy" size={25} color = {focused ? '#e32f45' :'#748c94'}/>
                     <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Weather</Text>
                     </View >
                     )}} />
-            <Tab.Screen name="Mic" component={Mic} options={{  tabBarIcon: ({focused}) => (
-                    <View style={{ alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center' }}>
-                        <IconEntypo name="mic"  size={25}  color = {focused ? '#e32f45' :'#748c94'}/>
-                        <Text styles={{color: focused?  '#e32f45' :'#748c94', fontSize:12}} >Mic</Text>
-                    </View  >
-                )}}/>
             <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({focused}) => (
                     <View style={{alignContent: 'center', justifyContent: 'center', top:10, alignItems:'center'}}>
                         <IconAntDesign name="user" size={25} color = {focused ? '#e32f45' :'#748c94'}/>

@@ -1,15 +1,5 @@
-import {Text, View, Dimensions, StatusBar, ScrollView, Image, ImageBackground, SafeAreaView, StyleSheet} from 'react-native'
-import LineGraph from '@chartiful/react-native-line-graph'
+import {Text, View, ScrollView, Image, ImageBackground, SafeAreaView, StyleSheet} from 'react-native'
 import {useState, useEffect} from 'react'
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
-import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import axios from 'axios';
 export default function Weather(){
