@@ -2,7 +2,6 @@ import {Text, View, ScrollView, TouchableOpacity} from 'react-native'
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import IconFeather from 'react-native-vector-icons/Feather';
 import IconIon from 'react-native-vector-icons/Ionicons';
-import MQTT from 'sp-react-native-mqtt';
 export default function Notify(){
 
     // MQTT.createClient({

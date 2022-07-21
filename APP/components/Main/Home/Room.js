@@ -108,7 +108,7 @@ export default function Room ({navigation,route}) {
                   break;
                 } 
              }
-             let temp =  parseFloat(tempDevice.data[0].value) 
+             let temp =  parseFloat(tempDevice.data[tempDevice.data.length-1].value) 
              setTemperature(temp.toFixed(1))
              var humiDevice = [];
              for(let i = 0; i<devices.length;i++){

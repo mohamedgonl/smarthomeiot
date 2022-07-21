@@ -31,6 +31,7 @@ const getData = async (req,res) => {
     }
 }
 
+
 const control = async (req, res) => {
     try {
         const {deviceId, ...control} = req.body;
